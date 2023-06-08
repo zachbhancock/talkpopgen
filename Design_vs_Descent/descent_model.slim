@@ -1,0 +1,57 @@
+//this is the descent model from the video "Design vs. Descent"
+
+initialize() {
+         initializeSLiMOptions(nucleotideBased=T);
+         defineConstant("L", initializeAncestralNucleotides("ancestral.txt"));
+         mm = mmJukesCantor(1e-6);
+         initializeMutationTypeNuc("m1", 0.5, "f", 0.0);
+         initializeMutationTypeNuc("m2", 0.1, "g", -0.03, 0.2);  // deleterious
+         initializeGenomicElementType("g1", c(m1,m2), c(3,3), mm);  // pos 1/2
+         initializeGenomicElementType("g2", c(m1,m2), c(5,1), mm);  // pos 3
+         initializeRecombinationRate(0.00001);
+         types = rep(c(g1,g2), 3000);
+         starts = repEach(seqLen(3000) * 3, 2) + rep(c(0,2), 3000);
+         ends = starts + rep(c(1,0), 3000);
+         initializeGenomicElement(types, starts, ends);
+} 
+
+//ancestral population
+1 early() {
+         sim.addSubpop("p1", 1000);
+     
+     }
+     
+//first split
+2000 late(){
+
+sim.addSubpopSplit("p2", 1000, p1);
+
+}
+
+//second split
+4000 late(){
+
+sim.addSubpopSplit("p3", 1000, p2);
+
+}
+
+//third split
+6000 late(){
+
+sim.addSubpopSplit("p4", 1000, p3);
+
+}	
+
+//sample one "species" from each descendant population
+10000 late(){     
+
+	g = sample(p1.genomes, 1);
+	h = sample(p2.genomes, 1);
+	i = sample(p3.genomes, 1);
+	j = sample(p4.genomes, 1);
+	catn("P1" + g.nucleotides());
+	catn("P2" + h.nucleotides());
+	catn("P3" + i.nucleotides());
+	catn("P4" + j.nucleotides());
+    
+    }

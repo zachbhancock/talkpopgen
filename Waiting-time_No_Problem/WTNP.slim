@@ -1,0 +1,83 @@
+// 'waiting-time? no problem' model
+
+initialize() {
+	defineConstant("L", 10);
+	defineConstant("EFF", c(1.0, 1.0, 1.0, 1.05)); //DFE - target seq is TTTTTTTTTT
+	initializeSLiMOptions(nucleotideBased=T);
+	
+	seq = 'AAAAAAAAAA'; //ancestral sequence
+	initializeAncestralNucleotides(seq);
+	
+	initializeMutationTypeNuc("m1", 0.5, "f", 0.0);
+	initializeGenomicElementType("g1", m1, 1.0, mmJukesCantor(2.5e-7)); //mutation model
+	initializeGenomicElement(g1, 0, L-1);
+	initializeRecombinationRate(1e-8); //recombination rate
+}
+1 early() {
+	sim.addSubpop("p1", 10000); //establish population
+}
+
+//evaluate the fitness of each string pos by pos
+//fitness is currently multiplicative
+
+s1 fitnessEffect() {
+	nuc10 = genome1.nucleotides(0, 0, format="integer");
+	nuc11 = genome1.nucleotides(1, 1, format="integer");
+	nuc12 = genome1.nucleotides(2, 2, format="integer");
+	nuc13 = genome1.nucleotides(3, 3, format="integer");
+	nuc14 = genome1.nucleotides(4, 4, format="integer");
+	nuc15 = genome1.nucleotides(5, 5, format="integer");
+	nuc16 = genome1.nucleotides(6, 6, format="integer");
+	nuc17 = genome1.nucleotides(7, 7, format="integer");
+	nuc18 = genome1.nucleotides(8, 8, format="integer");
+	nuc19 = genome1.nucleotides(9, 9, format="integer");
+	nuc20 = genome1.nucleotides(0, 0, format="integer");
+	nuc21 = genome1.nucleotides(1, 1, format="integer");
+	nuc22 = genome1.nucleotides(2, 2, format="integer");
+	nuc23 = genome1.nucleotides(3, 3, format="integer");
+	nuc24 = genome1.nucleotides(4, 4, format="integer");
+	nuc25 = genome1.nucleotides(5, 5, format="integer");
+	nuc26 = genome1.nucleotides(6, 6, format="integer");
+	nuc27 = genome1.nucleotides(7, 7, format="integer");
+	nuc28 = genome1.nucleotides(8, 8, format="integer");
+	nuc29 = genome1.nucleotides(9, 9, format="integer");
+	return EFF[nuc10] * EFF[nuc11] * EFF[nuc12] * EFF[nuc13] * EFF[nuc14]* EFF[nuc15]* EFF[nuc16]* EFF[nuc17]* EFF[nuc18]* EFF[nuc19]* EFF[nuc20]* EFF[nuc21]* EFF[nuc22]* EFF[nuc23]* EFF[nuc24]* EFF[nuc25]* EFF[nuc26]* EFF[nuc27]* EFF[nuc28]* EFF[nuc29];
+
+}
+
+//run for 5k gens, output the pos and time for each sub
+
+5000 late() {
+	subs0 = sim.substitutions[sim.substitutions.position == 0];
+	subs1 = sim.substitutions[sim.substitutions.position == 1];
+	subs2 = sim.substitutions[sim.substitutions.position == 2];
+	subs3 = sim.substitutions[sim.substitutions.position == 3];
+	subs4 = sim.substitutions[sim.substitutions.position == 4];
+	subs5 = sim.substitutions[sim.substitutions.position == 5];
+	subs6 = sim.substitutions[sim.substitutions.position == 6];
+	subs7 = sim.substitutions[sim.substitutions.position == 7];
+	subs8 = sim.substitutions[sim.substitutions.position == 8];
+	subs9 = sim.substitutions[sim.substitutions.position == 9];
+	
+	for (sub in subs0)
+		catn("Sub to " + sub.nucleotide + " at pos 0 in "  + sub.fixationGeneration);
+	for (sub in subs1)
+		catn("Sub to " + sub.nucleotide + " at pos 1 in "  + sub.fixationGeneration);
+	for (sub in subs2)
+		catn("Sub to " + sub.nucleotide + " at pos 2 in "  + sub.fixationGeneration);
+	for (sub in subs3)
+		catn("Sub to " + sub.nucleotide + " at pos 3 in "  + sub.fixationGeneration);
+	for (sub in subs4)
+		catn("Sub to " + sub.nucleotide + " at pos 4 in "  + sub.fixationGeneration);
+	for (sub in subs5)
+		catn("Sub to " + sub.nucleotide + " at pos 5 in "  + sub.fixationGeneration);
+	for (sub in subs6)
+		catn("Sub to " + sub.nucleotide + " at pos 6 in "  + sub.fixationGeneration);
+	for (sub in subs7)
+		catn("Sub to " + sub.nucleotide + " at pos 7 in "  + sub.fixationGeneration);
+	for (sub in subs8)
+		catn("Sub to " + sub.nucleotide + " at pos 8 in "  + sub.fixationGeneration);
+	for (sub in subs9)
+		catn("Sub to " + sub.nucleotide + " at pos 9 in "  + sub.fixationGeneration);
+		
+}

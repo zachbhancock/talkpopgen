@@ -1,0 +1,4 @@
+#Running BEAST
+cd /Applications/BEAST\ 2.6.0/bin
+./beauti
+./beast -threads 4 "file.xml"

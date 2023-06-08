@@ -1,0 +1,43 @@
+// test of genetic entropy
+initialize() {
+	initializeSLiMModelType("nonWF");
+	defineConstant("K", 1000);	// carrying capacity
+	
+	// set up mutation
+	initializeMutationType("m1", 0.5, "f", 0.0); //neutral
+	m1.convertToSubstitution = F;
+	initializeMutationType("m2", 0.5, "e", -0.1); //deleterious
+	m2.convertToSubstitution = F;
+	initializeMutationType("m3", 0.5, "g", 0.001, 0.2); //beneficial
+	m3.convertToSubstitution = F;
+	
+	initializeGenomicElementType("g1", c(m1, m2, m3), c(0.49, 0.5, 0.01)); //fraction of each mut type
+	initializeGenomicElement(g1, 0, 1e6); //genome size
+	initializeMutationRate(1e-7); 
+	initializeRecombinationRate(1e-8);
+}
+
+// each individual reproduces once with someone else at random
+reproduction() {
+	subpop.addCrossed(individual, subpop.sampleIndividuals(1));
+}
+
+// create an initial population of 1000 individuals
+1 early() {
+	sim.addSubpop("p1", 1000);
+}
+
+// provide density-dependent selection
+early() {
+	p1.fitnessScaling = K / p1.individualCount;
+}
+
+10000: late() {
+
+// this prints four columns: population size, neutral muts, deleterious muts, beneficial muts
+catn(p1.individualCount + " " + sim.countOfMutationsOfType(m1) + " " + sim.countOfMutationsOfType(m2) + " " + sim.countOfMutationsOfType(m3));
+}
+
+
+// finish at 100k gens
+100000 late() { sim.simulationFinished(); }
