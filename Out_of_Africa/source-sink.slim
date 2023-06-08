@@ -1,0 +1,59 @@
+//this is the simulation model from the video "Out of Africa (Not Babel)"
+
+initialize() {
+
+initializeTreeSeq();
+ initializeMutationRate(0);
+ initializeMutationType("m1", 0.5, "f", 0.0);
+ initializeGenomicElementType("g1", m1, 1.0);
+ initializeGenomicElement(g1, 0, 100000);
+initializeRecombinationRate(0);
+
+}
+
+//burn-in period
+1 late() {
+
+	sim.addSubpop("p1", 5000);
+	}
+
+//start ancestral population	
+50000 late(){
+
+	sim.addSubpopSplit("p2", 4000, p1);
+	sim.addSubpopSplit("p3", 4000, p1);
+	p1.setSubpopulationSize(4000);
+	p1.setMigrationRates(c(p2, p3), c(0.001, 0.001));
+	p2.setMigrationRates(c(p1, p3), c(0.001, 0.001));
+	p3.setMigrationRates(c(p1, p2), c(0.001, 0.001));
+	}
+	
+//first colonization
+70000 late(){
+
+	sim.addSubpopSplit("p4", 100, p1);
+	p4.setMigrationRates(p1, 1e-5);
+	}
+
+
+//second colonization
+70075 late(){
+	
+	sim.addSubpopSplit("p5", 50, p4);
+	p5.setMigrationRates(p4, 0.001);
+	p4.setMigrationRates(p5, 0.001);
+
+	}
+
+//population growth
+70300:70400 late(){
+
+	newsizep4 = asInteger(p4.individualCount * 1.03);
+	p4.setSubpopulationSize(newsizep4);	
+	newsizep5 = asInteger(p5.individualCount * 1.03);
+	p5.setSubpopulationSize(newsizep5);
+	}
+	
+
+70450 late() { sim.treeSeqOutput("human_migration.trees");}
+
